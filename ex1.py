@@ -1,14 +1,14 @@
-import helpers
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 from scipy.optimize import linprog
+import helpers
 
 
 def render_ex1():
-    r1 = 160
-    r2 = 180
-    r3 = 140
+    r1 = 120
+    r2 = 160
+    r3 = 150
 
     A = np.array([
         [0.5, 0.25],
@@ -18,7 +18,7 @@ def render_ex1():
         [0, -1]
     ])
     b = np.array([r1, r2, r3, 0, 0])
-    c = np.array([50, 60])
+    c = np.array([40, 50])
 
     fig, ax = plt.subplots()
     fig.subplots_adjust(bottom=0.3)
@@ -29,10 +29,6 @@ def render_ex1():
     axr2 = fig.add_axes([0.3, ymin + 1 * dy, 0.5, 0.0225])
     axr3 = fig.add_axes([0.3, ymin, 0.5, 0.0225])
 
-
-    # line, = ax.plot(t, f(t, init_amplitude, init_frequency), lw=2)
-    # ax.set_xlabel('Time [s]')
-
     def plt_halfspace(a, b, bbox, ax, label=""):
         if a[1] == 0:
             return ax.axvline(b / a[0], label=label)
@@ -40,12 +36,10 @@ def render_ex1():
             x = np.linspace(bbox[0][0], bbox[0][1], 20)
             return ax.plot(x, (b - a[0] * x) / a[1], label=label)
 
-
     def get_linedata(a, b, bbox):
         x = np.linspace(bbox[0][0], bbox[0][1], 20)
         y = (b - a[0] * x) / a[1]
         return x, y
-
 
     r1_slider = Slider(
         ax=axr1,
@@ -100,7 +94,6 @@ def render_ex1():
 
     opt_text = ax.text(opt_x1, opt_x2, "({:.1f},{:.1f})".format(opt_x1, opt_x2))
 
-
     def update_r(val, idx):
         next_line_data = get_linedata(A[idx, :], val, bbox)
         lines[idx][0].set_data(next_line_data)
@@ -124,7 +117,6 @@ def render_ex1():
 
     fig.legend(loc="upper right")
 
-
     points, intpoint, hs = helpers.solve_convex_set(A, b, bbox)
 
-    feasible_set = ax.fill(points[:, 0], points[:, 1], alpha =0.3)
+    feasible_set = ax.fill(points[:, 0], points[:, 1], alpha=0.3)
